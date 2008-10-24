@@ -1,0 +1,35 @@
+.\" man page for libexpbuf
+.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.TH expbuf_clear 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.SH NAME
+expbuf_clear \- clear out, or empty, the data in the buffer.
+.SH SYNOPSIS
+.B #include <expbuf.h>
+.sp
+.B void expbuf_clear(expbuf_t *buf);
+.br
+.SH DESCRIPTION
+.B expbuf_clear()
+is used to clear all the data in the buffer. It does not free any memory, or adjust anything except for the
+.I length
+field, which is set to zero.   To de-allocate memory, see
+.BR expbuf_free (3),
+.SH SEE ALSO
+.BR libexpbuf (3),
+.BR expbuf_add (3),
+.BR expbuf_free (3),
+.BR expbuf_init (3),
+.BR expbuf_purge (3),
+.BR expbuf_shrink (3),
+.BR expbuf_t (3)
+.SH BUGS
+No known bugs at this time. 
+.SH AUTHOR
+.nf
+Clint Webb (webb.clint@gmail.com)
+on behalf of Hyper-Active Systems, Australia.
+.br
+http://www.hyper-active.com.au/libexpbuf/
+.fi
+.SH HISTORY
+Oct 23, 2008 \- Initial v1.0 release made public.

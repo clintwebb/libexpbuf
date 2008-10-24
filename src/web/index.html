@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>libexpbuf</title>
+</head>
+<body>
+
+<h1>libexpbuf</h1>
+<p>C library to handle a simple expanding buffer.</p>
+
+<h2>Summary</h2>
+<p>libexpbuf provides methods to enable a very simplistic expanding buffer.  As you add data to the buffer, it expands the memory that it uses.  As data is processed, it can be removed from the buffer, even if there is more data available, in which case, the remaining data is moved down to the beginning of the buffer.   Functions are provided to control the buffer from initialisation to adding and purging data, and controlling the size of the buffer by shrinking it.</p>
+<p>It can also be used in any instance where you need to deal with a variable length string of data.</p>
+
+<h2>Licence</h2>
+<p>libexpbuf is released under the Gnu Public Licence (version 2 or greater).  If you wish to use libexpbuf on any project that cannot utilise the GPL licence, you should contact Hyper-Active Systems to obtain a suitable licence.</p>
+
+<h2>Download</h2>
+<p>Download the source from the following location:</p>
+<ul>
+<li><a href="libexpbuf-src-1.0.tar.gz">libexpbuf-src-1.0.tar.gz</a></li>
+</ul>
+
+<h2>Build and Install</h2>
+libexpbuf is easily built and installed.
+<pre>
+  make
+  sudo make install
+</pre>
+<p>If you don't have sudo installed and configured on your system, log in as root and run the 'make install' command.</p>
+
+<h2>Introduction to libexpbuf</h2>
+
+<h3>Help and documentation</h3>
+<p>In addition to this document, all functions and structures have complete man pages which should be included with the install.</p>
+
+<h3>A quick example</h3>
+<pre>
+<span style="color: #008000;">#include &lt;expbuf.h&gt;</span>
+
+<span style="color: #800000;">int</span><span style="color: #000000;"> main(</span><span style="color: #800000;">void</span><span style="color: #000000;">) {</span>
+<span style="color: #000000;">	expbuf_t buffer;</span>
+<span style="color: #000000;">	</span><span style="color: #800000;">char</span><span style="color: #000000;"> data[</span><span style="color: #0000ff;">1024</span><span style="color: #000000;">]];</span>
+<span style="color: #000000;">	</span><span style="color: #800000;">int</span><span style="color: #000000;"> len, avail;</span>
+<span style="color: #000000;">	</span>
+<span style="color: #000000;">	expbuf_init(&amp;buffer, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	len = read_data(data, </span><span style="color: #0000ff;">1024</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">	</span><span style="font-weight: bold;color: #000000;">while</span><span style="color: #000000;"> (len &gt;= </span><span style="color: #0000ff;">0</span><span style="color: #000000;">) {</span>
+<span style="color: #000000;">		expbuf_add(&amp;buffer, data, len);</span>
+<span style="color: #000000;">		processed = process_data(buffer.data, buffer.length);</span>
+<span style="color: #000000;">		expbuf_purge(&amp;buffer, processed);</span>
+<span style="color: #000000;">		expbuf_shrink(&amp;buffer, </span><span style="color: #0000ff;">1024</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">		len = read_data(data);</span>
+<span style="color: #000000;">	}</span>
+<span style="color: #000000;">	expbuf_free(&amp;buffer);</span>
+<span style="color: #000000;">	return(0);</span>
+<span style="color: #000000;">}</span>
+</pre>
+
+<h3>Initialising a buffer</h3>
+<p>When you first create a buffer, the contents of it will be random, and need to be initialised.</p>
+<ul>
+<li>
+<p>It can either be an auto variable:</p>
+<pre>
+<span style="color: #000000;">expbuf_t buffer;</span>
+<span style="color: #000000;">expbuf_init(&amp;buffer, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+</pre>
+</li>
+<li>
+<p>Or it can be allocated from the heap:</p>
+<pre>
+<span style="color: #000000;">expbuf_t *buffer;</span>
+<span style="color: #000000;">buffer = (expbuf_t *) malloc(</span><span style="font-weight: bold;color: #000000;">sizeof</span><span style="color: #000000;">(expbuf_t));</span>
+<span style="color: #000000;">expbuf_init(buffer, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+</pre>
+</li>
+</ul>
+
+<h3>Adding data to the buffer</h3>
+<p>The buffer would be almost useless without some method to add data to the buffer.  You can do this in several ways.</p>
+<ul>
+<li>
+<p>You can get some data into a pre-determined buffer, and then add it to the expanding buffer.   This is simple, but not really the most efficient.</p>
+<pre>
+<span style="color: #000000;">expbuf_t buffer;</span>
+<span style="color: #800000;">char</span><span style="color: #000000;"> tmp[</span><span style="color: #0000ff;">1024</span><span style="color: #000000;">];</span>
+<span style="color: #800000;">int</span><span style="color: #000000;"> len;</span>
+
+<span style="color: #000000;">expbuf_init(&amp;buffer, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">len = get_data(tmp, </span><span style="color: #0000ff;">1024</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">expbuf_add(&amp;buffer, tmp, len);</span>
+</pre>
+</li>
+<li>
+<p>A more efficient way of doing it is to make sure that there is enough free space in our buffer first, and then putting data in there directly, and then manually updating the length field.  This is a bit more advanced, but will should reduce the amount of processing time involved in copying the data from buffer to buffer.</p>
+<pre>
+<span style="color: #000000;">expbuf_t buffer;</span>
+<span style="color: #800000;">char</span><span style="color: #000000;"> tmp[</span><span style="color: #0000ff;">1024</span><span style="color: #000000;">];</span>
+<span style="color: #800000;">int</span><span style="color: #000000;"> len;</span>
+
+<span style="color: #000000;">expbuf_init(&amp;buffer, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">expbuf_shrink(&amp;buffer, </span><span style="color: #0000ff;">1024</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">len = get_data(buffer.data+buffer.length, </span><span style="color: #0000ff;">1024</span><span style="color: #000000;">);</span>
+<span style="color: #000000;">buffer.length += len;</span>
+</pre>
+<p>In this example, before we get the data, we call <b>expbuf_shrink</b> to first make sure that we have 1024 bytes available in the buffer (which would be expanded if needed).   Depending on your circumstances, you may be able to optimise this process by only shrinking if there is not enough available, otherwise leaving the allocated memory alone.</p>
+</li>
+</ul>
+
+<h3>Removing data from the buffer</h3>
+<p>Removing data from the buffer is almost as important as being able to put data into it.  To encourage efficient use of the buffer, we dont provide a function that pulls out chunks, but instead assumes developers will access the data directly.  However, to assist the management of removing chunks of data, we have the <b>expbuf_purge</b> and <b>expbuf_clear</b> functions.</p>
+<pre>
+<span style="color: #800000;">int</span><span style="color: #000000;"> processed = get_data(buffer.data, buffer.length);</span>
+<span style="color: #000000;">expbuf_purge(&amp;buffer, processed);</span>
+</pre>
+<p><b>expbuf_clear</b> will effectively purge all the data from the buffer (although it doesn't de-allocate any memory)</p>
+
+<h3>Cleaning up a buffer</h3>
+<p>When you are finished using a buffer, you will need to ensure that it is empty and all memory has been de-allocated.</p>
+<pre>
+<span style="color: #000000;">expbuf_t *buf;</span>
+
+<span style="color: #000000;">buf = (expbuf_t *) malloc(</span><span style="font-weight: bold;color: #000000;">sizeof</span><span style="color: #000000;">(expbuf_t));</span>
+<span style="color: #000000;">expbuf_init(buf, </span><span style="color: #0000ff;">0</span><span style="color: #000000;">);</span>
+<span style="font-style: italic;color: #808080;">// ... assume data has been added and processed, etc.</span>
+<span style="color: #000000;">expbuf_free(buf);</span>
+<span style="color: #000000;">free(buf);</span>
+</pre>
+
+<h2>Contributing to libexpbuf development</h2>
+<p>We welcome requests for changes or improvements, the source is managed thru a <b>git</b> repository at github.  You are encouraged to fork it and submit any changes back to us.   See <a href="http://github.com/hyper/libexpbuf/">http://github.com/hyper/libexpbuf/</a>.</p>
+<p>Contact information via email can be obtained by looking at the source code and header files.</p>
+
+<h2>Projects or Products that use libexpbuf</h2>
+<p>libexpbuf is a rather new library, so it has not been exposed to a lot of developers.  However, there are a few other libraries and projects that utilise it.</p>
+<ul>
+  <li><a href="http://hyper-active.com.au/libevhttpget/">libevhttpget</a> - library to obtain files over http using a libevent event queue.
+  <li><a href="http://hyper-active.com.au/p2net/">p2net</a> - peer-to-peer web downloading assistance project.
+</ul>
+
+<hr>
+<footer>
+&copy; Copyright 2008, Hyper-Active Systems, Australia.
+</footer>
+</body>
+</html>

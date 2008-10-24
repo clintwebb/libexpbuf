@@ -26,12 +26,13 @@ typedef struct
 } expbuf_t;
 
 
-void expbuf_alloc(expbuf_t *buf, unsigned int size);
+void expbuf_init(expbuf_t *buf, unsigned int size);
 void expbuf_clear(expbuf_t *buf);
+void expbuf_free(expbuf_t *buf);
 
 void expbuf_add(expbuf_t *buf, void *data, unsigned int len);
 void expbuf_purge(expbuf_t *buf, unsigned int len);
-
+void expbuf_shrink(expbuf_t *buf, unsigned int extra);
 
 
 #endif

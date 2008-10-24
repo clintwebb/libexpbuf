@@ -1,0 +1,19 @@
+[Dir src]
+Dirs=libexpbuf
+Files=
+
+[Dir src/libexpbuf]
+Dirs=doc
+Files=expbuf.c/expbuf.h/Makefile
+
+[Dir src/libexpbuf/doc]
+Dirs=
+Files=expbuf_init.3/libexpbuf.3/expbuf_add.3/expbuf_clear.3/expbuf_free.3/expbuf_purge.3/expbuf_shrink.3/expbuf_t.3
+
+[Project Dir]
+Dirs=docs/src
+Files=
+
+[Project File]
+Name=libexpbuf
+Type=Default

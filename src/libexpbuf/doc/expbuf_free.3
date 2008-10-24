@@ -1,0 +1,68 @@
+.\" man page for libexpbuf
+.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.TH expbuf_free 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.SH NAME
+expbuf_free \- clear the buffer and de-allocate memory that was allocated for it.
+.SH SYNOPSIS
+.B #include <expbuf.h>
+.sp
+.B void expbuf_free(expbuf_t *buf);
+.br
+.SH EXAMPLES
+#include <expbuf.h>
+.sp
+int main(void) {
+.br
+	expbuf_t *buffer;
+.br
+	char data[1024]];
+.br
+	int len, avail;
+.sp
+	buffer = (expbuf_t *) malloc(sizeof(expbuf_t));
+.br
+	expbuf_init(buffer, 0);
+.br
+	len = read_data(data, 1024);
+.br
+	while (len >= 0) {
+.br
+		expbuf_add(buffer, data, len);
+.br
+		processed = process_data(buffer->data, buffer->length);
+.br
+		expbuf_purge(buffer, processed);
+.br
+		len = read_data(data);
+.br
+	}
+.br
+	expbuf_free(buffer);
+.br
+	free(buffer);
+.br
+	return(0);
+.br
+}
+.SH DESCRIPTION
+.B expbuf_free
+is used to clean up the structure and de-allocate memory that was allocated for it.  After calling this function it is safe to discard the expbuf_t object.
+.SH SEE ALSO
+.BR libexpbuf (3),
+.BR expbuf_add (3),
+.BR expbuf_clear (3),
+.BR expbuf_init (3),
+.BR expbuf_purge (3),
+.BR expbuf_shrink (3),
+.BR expbuf_t (3)
+.SH BUGS
+No known bugs at this time. 
+.SH AUTHOR
+.nf
+Clint Webb (webb.clint@gmail.com)
+on behalf of Hyper-Active Systems, Australia.
+.br
+http://www.hyper-active.com.au/libexpbuf/
+.fi
+.SH HISTORY
+Oct 23, 2008 \- Initial v1.0 release made public.

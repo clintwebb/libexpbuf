@@ -20,14 +20,6 @@
 
 
 
-/*
-typedef struct 
-{
-	char *data;
-	unsigned int length;
-	unsigned int max;
-} expbuf_t;
-*/
 
 // initialise an expbuf structure, assuming that it contains garbage to begin with.
 void expbuf_init(expbuf_t *buf, unsigned int size)
@@ -50,12 +42,24 @@ void expbuf_init(expbuf_t *buf, unsigned int size)
 	}
 }
 
-// clear out any data in the buffer.  THis should reset everything to 'empty'
+// clear out any data in the buffer.  This will reset the length pointer only.  It will not free any resources held.
 void expbuf_clear(expbuf_t *buf)
 {
 	assert(buf);
 	assert(buf->length <= buf->max);
-	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL));
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
+	
+	buf->length = 0;
+}
+
+// this will clear out any data in the buffer, and free the resources
+// allocated.  After calling this function, it should be safe to
+// deallocate the expbuf_t object.
+void expbuf_free(expbuf_t *buf)
+{
+	assert(buf);
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 	if (buf->data) {
 		free(buf->data);
 		buf->data = NULL;
@@ -63,6 +67,8 @@ void expbuf_clear(expbuf_t *buf)
 		buf->max = 0;
 	}
 }
+
+
 
 // add data to the end of our buffer, expanding it if necessary.
 void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
@@ -73,7 +79,7 @@ void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
 	assert(data);
 	assert(len > 0);
 	assert(buf->length <= buf->max);
-	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL));
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
 	avail = buf->max - buf->length;
 	if (avail < len) {
@@ -83,7 +89,7 @@ void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
 		assert(buf->length <= buf->max);	
 	}
 
-	memmov(buf->data + buf->length, data, len);
+	memmove(buf->data + buf->length, data, len);
 	buf->length += len;
 	assert(buf->length <= buf->max);
 }
@@ -95,26 +101,38 @@ void expbuf_purge(expbuf_t *buf, unsigned int len) {
 	assert(buf);
 	assert(len > 0);
 	assert(buf->length <= buf->max);
-	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL));
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 	assert(len <= buf->length);
 
-	memmov(buf->data, buf->data+len, buf->length-len);
-	buf->length -= len;
+	if (len < buf->length) {
+		buf->length -= len;
+		memmove(buf->data, buf->data+len, buf->length);
+	}
+	else {
+		assert(buf->length == len);
+		len = 0;
+	}
 }
 
 // The buffer expands as more data is added to it.  This function will shrink down, leaving 'extra' padding at the end.
+// this will increase memory usage also if the available space is less than 'extra'.
 void expbuf_shrink(expbuf_t *buf, unsigned int extra)
 {
 	assert(buf);
 	assert(buf->length <= buf->max);
-	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL));
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
-	if ((buf->max - buf->length) != extra) {
+	if (extra == 0 && buf->length == 0 && buf->data != NULL) {
+		free(buf->data);
+		buf->data = NULL;
+		buf->max = 0;
+	}
+	else if ((buf->max - buf->length) != extra) {
 		buf->data = (char *) realloc(buf->data, buf->length+extra);
 		buf->max = buf->length + extra;
 	}
 	assert(buf->length <= buf->max);
-	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL));
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 }
 
 
