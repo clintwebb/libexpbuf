@@ -24,20 +24,14 @@
 // initialise an expbuf structure, assuming that it contains garbage to begin with.
 void expbuf_init(expbuf_t *buf, unsigned int size)
 {
+	buf->length = 0;
 	if (size > 0) {
 		buf->data = (char *) malloc(size);
-		if (buf->data == NULL) {
-			buf->length = 0;
-			buf->max = 0;
-		}
-		else {
-			buf->length = size;
-			buf->max = size;
-		}
+		if (buf->data == NULL) { buf->max = 0; }
+		else { buf->max = size; }
 	}
 	else {
 		buf->data = NULL;
-		buf->length = 0;
 		buf->max = 0;
 	}
 }
@@ -134,7 +128,7 @@ void expbuf_purge(expbuf_t *buf, unsigned int len) {
 	}
 	else {
 		assert(buf->length == len);
-		len = 0;
+		buf->length = 0;
 	}
 }
 
