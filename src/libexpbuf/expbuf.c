@@ -95,6 +95,30 @@ void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
 }
 
 
+// add data to the buffer overwriting what is already there, expanding it if necessary.
+void expbuf_set(expbuf_t *buf, void *data, unsigned int len)
+{
+	
+	assert(buf);
+	assert(data);
+	assert(len > 0);
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
+
+	buf->length = 0;
+
+	if (buf->max < len) {
+		buf->data = (char*) realloc(buf->data, len);
+		assert(buf->data);
+		buf->max = len;
+	}
+
+	memmove(buf->data, data, len);
+	buf->length = len;
+	assert(buf->length <= buf->max);
+}
+
+
 // purge some data from the begining of the buffer (presumably because it has been processed).  Moving the remaining data 
 // to the beginning of the buffer. 
 void expbuf_purge(expbuf_t *buf, unsigned int len) {

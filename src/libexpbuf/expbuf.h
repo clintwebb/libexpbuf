@@ -31,6 +31,7 @@ void expbuf_clear(expbuf_t *buf);
 void expbuf_free(expbuf_t *buf);
 
 void expbuf_add(expbuf_t *buf, void *data, unsigned int len);
+void expbuf_set(expbuf_t *buf, void *data, unsigned int len);
 void expbuf_purge(expbuf_t *buf, unsigned int len);
 void expbuf_shrink(expbuf_t *buf, unsigned int extra);
 
