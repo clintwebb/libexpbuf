@@ -17,7 +17,7 @@
 <h2>Download</h2>
 <p>Download the source from the following location:</p>
 <ul>
-<li><a href="libexpbuf-src-1.0.tar.gz">libexpbuf-src-1.0.tar.gz</a></li>
+<li><a href="libexpbuf-src-1.1.tar.gz">libexpbuf-src-1.1.tar.gz</a></li>
 </ul>
 
 <h2>Build and Install</h2>
@@ -107,6 +107,9 @@ libexpbuf is easily built and installed.
 </li>
 </ul>
 
+<h3>Replacing data in the buffer</h3>
+<p>There may be times when you want to add data to the buffer over-writing whatever is already in there.  <b>expbuf_set</b> will do this.  It works the same as <b>expbuf_add</b> except it overwrites instead of adds.</p>
+
 <h3>Removing data from the buffer</h3>
 <p>Removing data from the buffer is almost as important as being able to put data into it.  To encourage efficient use of the buffer, we dont provide a function that pulls out chunks, but instead assumes developers will access the data directly.  However, to assist the management of removing chunks of data, we have the <b>expbuf_purge</b> and <b>expbuf_clear</b> functions.</p>
 <pre>
@@ -137,6 +140,15 @@ libexpbuf is easily built and installed.
   <li><a href="http://hyper-active.com.au/libevhttpget/">libevhttpget</a> - library to obtain files over http using a libevent event queue.
   <li><a href="http://hyper-active.com.au/p2net/">p2net</a> - peer-to-peer web downloading assistance project.
 </ul>
+
+<h2>History</h2>
+<dl>
+<dt><b>v1.1</b> (Oct 30, 2008)</dt>
+<dd>Fixed some bugs that made it past testing, but were detected in a real application.</dd>
+<dt><b>v1.0</b> (Oct 24, 2008)</dt>
+<dd>Initial public releae.</dd>
+</dl>
+
 
 <hr>
 <footer>
