@@ -154,4 +154,18 @@ void expbuf_shrink(expbuf_t *buf, unsigned int extra)
 }
 
 
+// make sure that the data is null terminated, with enough space, and then return a pointer to the data.  
+char * expbuf_string(expbuf_t *buf) {
+	assert(buf != NULL);
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
+
+	// if there is no space allocated, or not enough space allocated, then we add one char (or create a new one)
+	if (buf->max == buf->length || buf->data == NULL) {
+		buf->data = (char *) realloc(buf->data, buf->length + 1);
+		buf->max++;
+	}
+	buf->data[buf->length] = '\0';
+	return(buf->data);
+}
 

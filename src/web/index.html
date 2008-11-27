@@ -118,6 +118,11 @@ libexpbuf is easily built and installed.
 </pre>
 <p><b>expbuf_clear</b> will effectively purge all the data from the buffer (although it doesn't de-allocate any memory)</p>
 
+<h3>Printing data from the buffer</h3>
+<p>Makes the data null-terminated so that it is suitable for printing as a string.  Does not add to the stored length of 
+the buffer, but will increase the 'max' by one if needed, and the buffer will be re-allocated.</p>
+
+
 <h3>Cleaning up a buffer</h3>
 <p>When you are finished using a buffer, you will need to ensure that it is empty and all memory has been de-allocated.</p>
 <pre>

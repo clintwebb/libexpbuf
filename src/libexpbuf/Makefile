@@ -41,6 +41,7 @@ install: $(LIBFILE) expbuf.h doc/expbuf_add.3  doc/expbuf_clear.3  doc/expbuf_fr
 	@mkdir tmp.install
 	@cp doc/* tmp.install/
 	@gzip tmp.install/expbuf_add.3
+	@gzip tmp.install/expbuf_string.3
 	@gzip tmp.install/expbuf_set.3
 	@gzip tmp.install/expbuf_clear.3
 	@gzip tmp.install/expbuf_free.3
@@ -50,6 +51,7 @@ install: $(LIBFILE) expbuf.h doc/expbuf_add.3  doc/expbuf_clear.3  doc/expbuf_fr
 	@gzip tmp.install/expbuf_t.3
 	@gzip tmp.install/libexpbuf.3
 	cp tmp.install/expbuf_add.3.gz $(MANPATH)/man3/
+	cp tmp.install/expbuf_string.3.gz $(MANPATH)/man3/
 	cp tmp.install/expbuf_set.3.gz $(MANPATH)/man3/
 	cp tmp.install/expbuf_clear.3.gz $(MANPATH)/man3/
 	cp tmp.install/expbuf_free.3.gz $(MANPATH)/man3/

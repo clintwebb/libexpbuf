@@ -31,6 +31,8 @@ libexpbuf \- library for an expanding buffer
 .B void expbuf_purge(expbuf_t *buf, unsigned int len)
 .br
 .B void expbuf_shrink(expbuf_t *buf, unsigned int extra)
+.br
+.B char * expbuf_string(expbuf_t *buf)
 .sp
 compile with the 
 .B -lexpbuf
@@ -85,6 +87,7 @@ is a simple library for handling an expanding buffer.  This buffer is very prima
 .BR expbuf_purge (3),
 .BR expbuf_set (3),
 .BR expbuf_shrink (3),
+.BR expbuf_string (3),
 .BR expbuf_t (3)
 .SH BUGS
 No known bugs at this time. 
@@ -96,4 +99,5 @@ on behalf of Hyper-Active Systems, Australia.
 http://www.hyper-active.com.au/libexpbuf/
 .fi
 .SH HISTORY
+Nov 27, 2008 \- v1.2 added the expbuf_string() function.
 Oct 23, 2008 \- Initial v1.0 release made public.
