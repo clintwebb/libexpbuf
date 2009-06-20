@@ -16,6 +16,11 @@
 #ifndef __EXPBUF_H
 #define __EXPBUF_H
 
+
+#define EXPBUF_VERSION 0x00010200
+#define EXPBUF_VERSION_TEXT "v1.02.00"
+
+
 typedef struct
 {
 	char *data;
