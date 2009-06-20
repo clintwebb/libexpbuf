@@ -16,9 +16,7 @@
 #ifndef __EXPBUF_H
 #define __EXPBUF_H
 
-
-
-typedef struct 
+typedef struct
 {
 	char *data;
 	unsigned int length;
@@ -33,7 +31,15 @@ void expbuf_free(expbuf_t *buf);
 void expbuf_add(expbuf_t *buf, void *data, unsigned int len);
 void expbuf_set(expbuf_t *buf, void *data, unsigned int len);
 void expbuf_purge(expbuf_t *buf, unsigned int len);
+
 void expbuf_shrink(expbuf_t *buf, unsigned int extra);
+
 char * expbuf_string(expbuf_t *buf);
+void expbuf_print(expbuf_t *buf, const char *format, ...);
+
+
+#define BUF_LENGTH(b)  ((b)->length)
+#define BUF_MAX(b)     ((b)->max)
+#define BUF_DATA(b)    ((b)->data)
 
 #endif
