@@ -114,8 +114,8 @@ void expbuf_set(expbuf_t *buf, void *data, unsigned int len)
 }
 
 
-// purge some data from the begining of the buffer (presumably because it has been processed).  Moving the remaining data 
-// to the beginning of the buffer. 
+// purge some data from the begining of the buffer (presumably because it has
+// been processed).  Moving the remaining data to the beginning of the buffer.
 void expbuf_purge(expbuf_t *buf, unsigned int len) {
 	assert(buf);
 	assert(len > 0);
@@ -125,6 +125,7 @@ void expbuf_purge(expbuf_t *buf, unsigned int len) {
 
 	if (len < BUF_LENGTH(buf)) {
 		BUF_LENGTH(buf) -= len;
+		assert(BUF_LENGTH(buf) > 0);
 		memmove(BUF_DATA(buf), BUF_DATA(buf)+len, BUF_LENGTH(buf));
 	}
 	else {

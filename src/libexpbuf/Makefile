@@ -12,7 +12,7 @@ all: $(LIBFILE)
 
 
 LIBS=
-ARGS=
+ARGS=-Wall -g
 REQH=
 
 # Need to be able to make 'man-pages' as well.  Not sure where to get the source for those... 
