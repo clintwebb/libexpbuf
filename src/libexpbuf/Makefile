@@ -17,8 +17,8 @@ REQH=
 
 # Need to be able to make 'man-pages' as well.  Not sure where to get the source for those... 
 
-libexpbuf.o: expbuf.c expbuf.h $(REQH)
-	gcc -c -fPIC expbuf.c -o $@ $(ARGS)
+libexpbuf.o: libexpbuf.c expbuf.h $(REQH)
+	gcc -c -fPIC libexpbuf.c -o $@ $(ARGS)
 
 libexpbuf.a: libexpbuf.o
 	@>$@
