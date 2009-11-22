@@ -20,6 +20,11 @@
 #include <unistd.h>
 
 
+#if (EXPBUF_VERSION != 0x00010210)
+#error "Incorrect header version.  code and header versions must match."
+#endif
+
+
 
 
 // initialise an expbuf structure, assuming that it contains garbage to begin with.
@@ -66,7 +71,7 @@ void expbuf_free(expbuf_t *buf)
 
 
 // add data to the end of our buffer, expanding it if necessary.
-void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
+void expbuf_add(expbuf_t *buf, const void *data, unsigned int len)
 {
 	unsigned int avail;
 	
@@ -91,7 +96,7 @@ void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
 
 
 // add data to the buffer overwriting what is already there, expanding it if necessary.
-void expbuf_set(expbuf_t *buf, void *data, unsigned int len)
+void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 {
 	
 	assert(buf);
