@@ -20,7 +20,7 @@
 #include <unistd.h>
 
 
-#if (EXPBUF_VERSION != 0x00010210)
+#if (EXPBUF_VERSION != 0x00010220)
 #error "Incorrect header version.  code and header versions must match."
 #endif
 
@@ -28,8 +28,20 @@
 
 
 // initialise an expbuf structure, assuming that it contains garbage to begin with.
-void expbuf_init(expbuf_t *buf, unsigned int size)
+expbuf_t * expbuf_init(expbuf_t *b, unsigned int size)
 {
+	expbuf_t *buf;
+	
+	// if a NULL is passed in, that means that we need to create the object ourselves (the safest path)
+	if (b) {
+		buf = b;
+		buf->internally_created = 0;
+	}
+	else {
+		buf = malloc(sizeof(expbuf_t));
+		buf->internally_created = 1;
+	}
+	
 	BUF_LENGTH(buf) = 0;
 	if (size > 0) {
 		BUF_DATA(buf) = (char *) malloc(size);
@@ -40,6 +52,8 @@ void expbuf_init(expbuf_t *buf, unsigned int size)
 		BUF_DATA(buf) = NULL;
 		BUF_MAX(buf) = 0;
 	}
+	
+	return(buf);
 }
 
 // clear out any data in the buffer.  This will reset the length pointer only.  It will not free any resources held.
@@ -65,6 +79,11 @@ void expbuf_free(expbuf_t *buf)
 		BUF_DATA(buf) = NULL;
 		BUF_LENGTH(buf) = 0;
 		BUF_MAX(buf) = 0;
+	}
+	
+	// if the buffer was created internally, then we need to make it free itself.
+	if (buf->internally_created == 1) {
+		free(buf);
 	}
 }
 

@@ -6,43 +6,48 @@ expbuf_init \- Initialise the values in the buffer structure.
 .SH SYNOPSIS
 .B #include <expbuf.h>
 .sp
-.B void expbuf_init(expbuf_t *buf, unsigned int size);
+.B expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size);
 .br
 .SH EXAMPLES
 #include <expbuf.h>
 .sp
 int main(void) {
 .br
-	expbuf_t buffer;
+	expbuf_t *buffer;
 .br
 	char data[1024]];
 .br
 	int len, avail;
 .sp
-	expbuf_init(&buffer, 0);
+	buffer = expbuf_init(NULL, 0);
 .br
 	len = read_data(data, 1024);
 .br
 	while (len >= 0) {
 .br
-		expbuf_add(&buffer, data, len);
+		expbuf_add(buffer, data, len);
 .br
-		processed = process_data(buffer.data, buffer.length);
+		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
 .br
-		expbuf_purge(&buffer, processed);
+		expbuf_purge(buffer, processed);
 .br
 		len = read_data(data);
 .br
 	}
 .br
-	expbuf_free(&buffer);
+	expbuf_free(buffer);
+.br
+	buffer = NULL;
 .br
 	return(0);
 .br
 }
 .SH DESCRIPTION
 .B expbuf_init()
-is used to initialise an expbuf_t structure.  It assumes that the contents of the existing structure are not valid, and merely sets all fields to default values.  The
+is used to initialise an expbuf_t structure.  If a pointer to an existing peice of memory is provided, it assumes that 
+the contents of the existing structure are not valid, and merely sets all fields to default values.  If the buf parameter is NULL,
+then it will internally allocate memory for the expbuf_t structure and return it.  It will keep track of the fact that it was created internally, and will be deallocated when exbpbuf_free() is called on it.   You should not free the memory for the object if the libexpbuf library created it.
+.sp The
 .I size
 field is used to pre-allocate some memory to the buffer.  
 .SH SEE ALSO

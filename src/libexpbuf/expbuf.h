@@ -17,8 +17,8 @@
 #define __EXPBUF_H
 
 
-#define EXPBUF_VERSION 0x00010210
-#define EXPBUF_VERSION_TEXT "v1.02.10"
+#define EXPBUF_VERSION 0x00010220
+#define EXPBUF_VERSION_TEXT "v1.02.20"
 
 
 typedef struct
@@ -26,10 +26,11 @@ typedef struct
 	char *data;
 	unsigned int length;
 	unsigned int max;
+	char internally_created;
 } expbuf_t;
 
 
-void expbuf_init(expbuf_t *buf, unsigned int size);
+expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size);
 void expbuf_clear(expbuf_t *buf);
 void expbuf_free(expbuf_t *buf);
 

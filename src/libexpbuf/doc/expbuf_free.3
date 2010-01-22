@@ -46,7 +46,7 @@ int main(void) {
 }
 .SH DESCRIPTION
 .B expbuf_free
-is used to clean up the structure and de-allocate memory that was allocated for it.  After calling this function it is safe to discard the expbuf_t object.
+is used to clean up the structure and de-allocate memory that was allocated for it.  If the object was created because a NULL was passed in to expbuf_init(), expbuf_free will also deallocate it.  However, if you created or provided the memory yourself, then you will need to clean it up.
 .SH SEE ALSO
 .BR libexpbuf (3),
 .BR expbuf_add (3),

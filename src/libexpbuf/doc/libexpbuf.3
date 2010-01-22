@@ -20,7 +20,7 @@ libexpbuf \- library for an expanding buffer
 .B } expbuf_t;
 .sp
 
-.B void expbuf_init(expbuf_t *buf, unsigned int size)
+.B expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size)
 .br
 .B void expbuf_clear(expbuf_t *buf)
 .br
@@ -42,29 +42,31 @@ option
 .sp
 int main(void) {
 .br
-	expbuf_t buffer;
+	expbuf_t *buffer;
 .br
 	char data[1024]];
 .br
 	int len, avail;
 .sp
-	expbuf_init(&buffer, 0);
+	buffer = expbuf_init(NULL, 0);
 .br
 	len = read_data(data, 1024);
 .br
 	while (len >= 0) {
 .br
-		expbuf_add(&buffer, data, len);
+		expbuf_add(buffer, data, len);
 .br
-		processed = process_data(buffer.data, buffer.length);
+		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
 .br
-		expbuf_purge(&buffer, processed);
+		expbuf_purge(buffer, processed);
 .br
 		len = read_data(data);
 .br
 	}
 .br
-	expbuf_free(&buffer);
+	expbuf_free(buffer);
+.br
+	buffer = NULL;
 .br
 	return(0);
 .br
@@ -99,5 +101,6 @@ on behalf of Hyper-Active Systems, Australia.
 http://www.hyper-active.com.au/libexpbuf/
 .fi
 .SH HISTORY
+Jan 22, 2010 \- v1.02.20 modified the init and free functions so that it can allocate an expbuf_t object internally.
 Nov 27, 2008 \- v1.2 added the expbuf_string() function.
 Oct 23, 2008 \- Initial v1.0 release made public.
