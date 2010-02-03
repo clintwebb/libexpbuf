@@ -1,6 +1,6 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH libexpbuf 3 "23 October 2008" "1.0" "Library for Expanding Buffer."
+.TH libexpbuf 3 "2 February 2010" "1.2.30" "Library for Expanding Buffer."
 .SH NAME
 libexpbuf \- library for an expanding buffer
 .SH SYNOPSIS
@@ -24,7 +24,7 @@ libexpbuf \- library for an expanding buffer
 .br
 .B void expbuf_clear(expbuf_t *buf)
 .br
-.B void expbuf_free(expbuf_t *buf)
+.B expbuf_t * expbuf_free(expbuf_t *buf)
 .br
 .B void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
 .br
@@ -64,18 +64,19 @@ int main(void) {
 .br
 	}
 .br
-	expbuf_free(buffer);
+	buffer = expbuf_free(buffer);
 .br
-	buffer = NULL;
-.br
+	assert(buffer == NULL);
+.sp
 	return(0);
 .br
 }
 .SH DESCRIPTION
 .B libexpbuf
-is a simple library for handling an expanding buffer.  This buffer is very primative, and is merely a single data string (keeping track of the actual length), and a maximum size that has so far been allocated.
-.br
-
+is a simple library for handling an expanding buffer.  This buffer is very primative, 
+and is merely a single data string (keeping track of the actual length), and a maximum 
+size that has so far been allocated.
+.sp
 .SH FILES
 .P 
 .I /usr/lib/libexpbuf.so
@@ -100,7 +101,3 @@ on behalf of Hyper-Active Systems, Australia.
 .br
 http://www.hyper-active.com.au/libexpbuf/
 .fi
-.SH HISTORY
-Jan 22, 2010 \- v1.02.20 modified the init and free functions so that it can allocate an expbuf_t object internally.
-Nov 27, 2008 \- v1.2 added the expbuf_string() function.
-Oct 23, 2008 \- Initial v1.0 release made public.

@@ -20,7 +20,7 @@
 #include <unistd.h>
 
 
-#if (EXPBUF_VERSION != 0x00010220)
+#if (EXPBUF_VERSION != 0x00010230)
 #error "Incorrect header version.  code and header versions must match."
 #endif
 
@@ -69,7 +69,11 @@ void expbuf_clear(expbuf_t *buf)
 // this will clear out any data in the buffer, and free the resources
 // allocated.  After calling this function, it should be safe to
 // deallocate the expbuf_t object.
-void expbuf_free(expbuf_t *buf)
+//
+// if the object was created internally, returns a NULL.  If the object was not 
+// created internally, then it will return the object so that it can be deleted 
+// elsewhere.
+expbuf_t * expbuf_free(expbuf_t *buf)
 {
 	assert(buf);
 	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
@@ -84,6 +88,10 @@ void expbuf_free(expbuf_t *buf)
 	// if the buffer was created internally, then we need to make it free itself.
 	if (buf->internally_created == 1) {
 		free(buf);
+		return(NULL);
+	}
+	else {
+		return(buf);
 	}
 }
 
