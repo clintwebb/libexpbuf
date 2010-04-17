@@ -45,11 +45,13 @@ int main(void) {
 is used to add data to the buffer, expanding it if needed.  If there is already data in the buffer, the new data will be added to the end of it.  If there is not enough memory allocated, it will resize the amount of memory as needed.
 .SH SEE ALSO
 .BR libexpbuf (3),
+.BR expbuf_addbuf (3),
 .BR expbuf_clear (3),
 .BR expbuf_free (3),
 .BR expbuf_init (3),
 .BR expbuf_purge (3),
 .BR expbuf_set (3),
+.BR expbuf_setbuf (3),
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)

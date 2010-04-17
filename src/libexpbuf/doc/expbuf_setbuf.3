@@ -1,0 +1,34 @@
+.\" man page for libexpbuf
+.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.TH expbuf_setbuf 3 "18 April 2010" "1.30" "libexpbuf - Library for a simple Expanding Buffer."
+.SH NAME
+expbuf_setbuf \- Set the contents of one buffer into to the buffer, overwriting it.
+.SH SYNOPSIS
+.B #include <expbuf.h>
+.sp
+.B void expbuf_setbuf(expbuf_t *target, expbuf_t *src);
+.br
+.SH DESCRIPTION
+.B expbuf_setbuf()
+is used to set data from one buffer to another buffer, overwriting the 'target' buffer, and expanding it if needed.  If there is already data in the buffer, the new data will be added to the end of it.  If there is not enough memory allocated, it will resize the amount of memory as needed.
+.SH SEE ALSO
+.BR libexpbuf (3),
+.BR expbuf_add (3),
+.BR expbuf_addbuf (3),
+.BR expbuf_clear (3),
+.BR expbuf_free (3),
+.BR expbuf_init (3),
+.BR expbuf_purge (3),
+.BR expbuf_set (3),
+.BR expbuf_shrink (3),
+.BR expbuf_string (3),
+.BR expbuf_t (3)
+.SH BUGS
+No known bugs at this time. 
+.SH AUTHOR
+.nf
+Clint Webb (webb.clint@gmail.com)
+on behalf of Hyper-Active Systems, Australia.
+.br
+http://www.hyper-active.com.au/libexpbuf/
+.fi

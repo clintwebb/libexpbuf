@@ -17,8 +17,8 @@
 #define __EXPBUF_H
 
 
-#define EXPBUF_VERSION 0x00010230
-#define EXPBUF_VERSION_TEXT "v1.02.30"
+#define EXPBUF_VERSION 0x00010300
+#define EXPBUF_VERSION_TEXT "v1.03.00"
 
 
 typedef struct
@@ -37,6 +37,9 @@ expbuf_t * expbuf_free(expbuf_t *buf);
 void expbuf_add(expbuf_t *buf, const void *data, unsigned int len);
 void expbuf_set(expbuf_t *buf, const void *data, unsigned int len);
 void expbuf_purge(expbuf_t *buf, unsigned int len);
+
+void expbuf_addbuf(expbuf_t *target, expbuf_t *src);
+void expbuf_setbuf(expbuf_t *target, expbuf_t *src);
 
 void expbuf_shrink(expbuf_t *buf, unsigned int extra);
 

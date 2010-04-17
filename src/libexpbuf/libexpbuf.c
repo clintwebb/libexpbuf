@@ -20,7 +20,7 @@
 #include <unistd.h>
 
 
-#if (EXPBUF_VERSION != 0x00010230)
+#if (EXPBUF_VERSION != 0x00010300)
 #error "Incorrect header version.  code and header versions must match."
 #endif
 
@@ -38,7 +38,7 @@ expbuf_t * expbuf_init(expbuf_t *b, unsigned int size)
 		buf->internally_created = 0;
 	}
 	else {
-		buf = malloc(sizeof(expbuf_t));
+		buf = calloc(1, sizeof(*buf));
 		buf->internally_created = 1;
 	}
 	
@@ -239,6 +239,21 @@ void expbuf_print(expbuf_t *buf, const char *format, ...)
 			redo = 0;
 		}
 	}
+}
+
+
+// function that adds data from src to target.
+void expbuf_addbuf(expbuf_t *target, expbuf_t *src)
+{
+	assert(target && src);
+	expbuf_add(target, BUF_DATA(src), BUF_LENGTH(src));
+}
+
+// function that sets data from src to target, overwriting what was originally in target.
+void expbuf_setbuf(expbuf_t *target, expbuf_t *src)
+{
+	assert(target && src);
+	expbuf_set(target, BUF_DATA(src), BUF_LENGTH(src));
 }
 
 
