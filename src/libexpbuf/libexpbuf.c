@@ -76,6 +76,9 @@ void expbuf_clear(expbuf_t *buf)
 expbuf_t * expbuf_free(expbuf_t *buf)
 {
 	assert(buf);
+
+	assert(buf->internally_created == 0 || buf->internally_created == 1);
+
 	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
 	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
 	if (BUF_DATA(buf)) {
