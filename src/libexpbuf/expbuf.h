@@ -17,8 +17,8 @@
 #define __EXPBUF_H
 
 
-#define EXPBUF_VERSION 0x00010300
-#define EXPBUF_VERSION_TEXT "v1.03.00"
+#define EXPBUF_VERSION 0x00010400
+#define EXPBUF_VERSION_TEXT "v1.04.00"
 
 
 typedef struct
@@ -50,5 +50,7 @@ void expbuf_print(expbuf_t *buf, const char *format, ...);
 #define BUF_LENGTH(b)  ((b)->length)
 #define BUF_MAX(b)     ((b)->max)
 #define BUF_DATA(b)    ((b)->data)
+#define BUF_OFFSET(b)  ((b)->data + (b)->length)
+#define BUF_AVAIL(b)   ((b)->max - (b)->length)
 
 #endif
