@@ -1,47 +1,37 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_init 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_init 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_init \- Initialise the values in the buffer structure.
 .SH SYNOPSIS
-.B #include <expbuf.h>
-.sp
-.B expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size);
-.br
-.SH EXAMPLES
 #include <expbuf.h>
 .sp
+expbuf_t * 
+.B expbuf_init
+(expbuf_t *buf, unsigned int size);
+.br
+.SH EXAMPLES
+.nf
+#include <expbuf.h>
+
 int main(void) {
-.br
 	expbuf_t *buffer;
-.br
 	char data[1024]];
-.br
 	int len, avail;
-.sp
 	buffer = expbuf_init(NULL, 0);
-.br
 	len = read_data(data, 1024);
-.br
 	while (len >= 0) {
-.br
 		expbuf_add(buffer, data, len);
-.br
 		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
-.br
 		expbuf_purge(buffer, processed);
-.br
 		len = read_data(data);
-.br
 	}
-.br
 	expbuf_free(buffer);
-.br
 	buffer = NULL;
-.br
 	return(0);
-.br
 }
+
+.fi
 .SH DESCRIPTION
 .B expbuf_init()
 is used to initialise an expbuf_t structure.  If a pointer to an existing peice of memory is provided, it assumes that 
@@ -60,14 +50,10 @@ field is used to pre-allocate some memory to the buffer.
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf/
 .fi
-.SH HISTORY
-Oct 23, 2008 \- Initial v1.0 release made public.

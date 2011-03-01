@@ -1,45 +1,35 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_purge 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_purge 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_purge \- Remove data from the begining of the buffer, moving any leftover data to the begining.
 .SH SYNOPSIS
-.B #include <expbuf.h>
-.sp
-.B void expbuf_purge(expbuf_t *buf, unsigned int size);
-.br
-.SH EXAMPLES
 #include <expbuf.h>
 .sp
+void 
+.B expbuf_purge
+(expbuf_t *buf, unsigned int size);
+.br
+.SH EXAMPLES
+.nf
+#include <expbuf.h>
+
 int main(void) {
-.br
 	expbuf_t buffer;
-.br
 	char data[1024]];
-.br
 	int len, avail;
-.sp
 	expbuf_init(&buffer, 0);
-.br
 	len = read_data(data, 1024);
-.br
 	while (len >= 0) {
-.br
 		expbuf_add(&buffer, data, len);
-.br
 		processed = process_data(buffer.data, buffer.length);
-.br
 		expbuf_purge(&buffer, processed);
-.br
 		len = read_data(data);
-.br
 	}
-.br
 	expbuf_free(&buffer);
-.br
 	return(0);
-.br
 }
+.fi
 .SH DESCRIPTION
 .B expbuf_purge()
 is used to remove data from the buffer that has been processed.  In otherwords, if you have receive 1200 bytes from a socket, and you run it through a processing routinge, which indicates that it has processed 845 bytes of that data, then we need to purge those 845 byte.  The remaining bytes will be moved down to the beginning of the buffer.
@@ -55,14 +45,10 @@ If all the data in the buffer is being purged, it merely indicated that there is
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf/
 .fi
-.SH HISTORY
-Oct 23, 2008 \- Initial v1.0 release made public.

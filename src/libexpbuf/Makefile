@@ -4,12 +4,13 @@ MAINFILE=libexpbuf.so
 LIBVER=1.0.1
 LIBFILE=$(MAINFILE).$(LIBVER)
 SONAME=$(MAINFILE).1
+LIBDIR=/usr/lib
+INCDIR=/usr/include
 
-MANPATH=/usr/local/man
+MANPATH=/usr/share/man
 
 
 all: $(LIBFILE)
-
 
 LIBS=
 ARGS=-Wall -g
@@ -29,39 +30,20 @@ $(LIBFILE): libexpbuf.o
 	gcc -shared -Wl,-soname,$(SONAME) -o $@ $^
 
 
-lib-test: lib-test.c $(REQH) /usr/include/expbuf.h
+lib-test: lib-test.c $(REQH) $(INCDIR)/expbuf.h
 	gcc lib-test.c -o $@ -lexpbuf
 
-install: $(LIBFILE) expbuf.h doc/expbuf_add.3  doc/expbuf_clear.3  doc/expbuf_free.3  doc/expbuf_init.3  doc/expbuf_purge.3  doc/expbuf_shrink.3  doc/expbuf_t.3  doc/libexpbuf.3
-	cp expbuf.h /usr/include/
-	cp $(LIBFILE) /usr/lib/
-	@-test -e /usr/lib/$(MAINFILE) && rm /usr/lib/$(MAINFILE)
-	ln -s /usr/lib/$(LIBFILE) /usr/lib/$(MAINFILE)
+install_dev: expbuf.h 
+	cp expbuf.h $(INCDIR)/
+	pushd doc
+	@for i in *.3; do gzip -c $$i > $(MANPATH)/man3/$$i.gz; done
+	popd
+
+install: $(LIBFILE)
+	cp $(LIBFILE) $(LIBDIR)/
+	@-test -e $(LIBDIR)/$(MAINFILE) && rm $(LIBDIR)/$(MAINFILE)
+	ln -s $(LIBDIR)/$(LIBFILE) $(LIBDIR)/$(MAINFILE)
 	nice ldconfig
-	@mkdir tmp.install
-	@cp doc/* tmp.install/
-	@gzip tmp.install/expbuf_add.3
-	@gzip tmp.install/expbuf_string.3
-	@gzip tmp.install/expbuf_set.3
-	@gzip tmp.install/expbuf_clear.3
-	@gzip tmp.install/expbuf_free.3
-	@gzip tmp.install/expbuf_init.3
-	@gzip tmp.install/expbuf_purge.3
-	@gzip tmp.install/expbuf_shrink.3
-	@gzip tmp.install/expbuf_t.3
-	@gzip tmp.install/libexpbuf.3
-	cp tmp.install/expbuf_add.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_string.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_set.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_clear.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_free.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_init.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_purge.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_shrink.3.gz $(MANPATH)/man3/
-	cp tmp.install/expbuf_t.3.gz $(MANPATH)/man3/
-	cp tmp.install/libexpbuf.3.gz $(MANPATH)/man3/
-	@rm -r tmp.install	
-	@echo "Install complete."
 
 clean:
 	@-[ -e libexpbuf.o ] && rm libexpbuf.o

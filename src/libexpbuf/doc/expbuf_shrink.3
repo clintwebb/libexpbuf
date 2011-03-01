@@ -1,47 +1,37 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_shrink 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_shrink 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_shrink \- Shrink the buffer to reclaim memory that has been allocated, but is not in use.
 .SH SYNOPSIS
-.B #include <expbuf.h>
-.sp
-.B void expbuf_shrink(expbuf_t *buf, unsigned int extra);
-.br
-.SH EXAMPLES
 #include <expbuf.h>
 .sp
+void 
+.B expbuf_shrink
+(expbuf_t *buf, unsigned int extra);
+.br
+.SH EXAMPLES
+.nf
+#include <expbuf.h>
+
 int main(void) {
-.br
 	expbuf_t buffer;
-.br
 	char data[1024]];
-.br
 	int len, avail;
-.sp
+
 	expbuf_init(&buffer, 0);
-.br
 	len = read_data(data, 1024);
-.br
 	while (len >= 0) {
-.br
 		expbuf_add(&buffer, data, len);
-.br
 		processed = process_data(buffer.data, buffer.length);
-.br
 		expbuf_purge(&buffer, processed);
-.br
 		expbuf_shrink(&buffer, 1024);
-.br
 		len = read_data(data);
-.br
 	}
-.br
 	expbuf_free(&buffer);
-.br
 	return(0);
-.br
 }
+.fi
 .SH DESCRIPTION
 .B expbuf_shrink()
 is used to shrink the buffer to reclaim memory that has been allocated, but is not in use.   The 'extra' parameter also allows it to ensure a specified amount of unused space is left at the end of the buffer.  This means that if there is not enough space in the buffer for the 'extra' amount, then it will increase the amount allocated.
@@ -57,14 +47,10 @@ If the 'extra' parameter is zero, and there is no data in the buffer, then all m
 .BR expbuf_set (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf
 .fi
-.SH HISTORY
-Oct 23, 2008 \- Initial v1.0 release made public.

@@ -1,76 +1,80 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH libexpbuf 3 "2 February 2010" "1.2.30" "Library for Expanding Buffer."
+.TH libexpbuf 3 "1 March 2011" "1.04" "Library for Expanding Buffer."
 .SH NAME
 libexpbuf \- library for an expanding buffer
 .SH SYNOPSIS
 .\" Syntax goes here. 
-.B #include <expbuf.h>
+#include <expbuf.h>
 .sp
-.B typedef struct
+typedef struct
 .br
-.B {
+{
 .br
-.B 	char *data;
+	char *data;
 .br
-.B 	unsigned int length;
+	unsigned int length;
 .br
-.B 	unsigned int max;
+	unsigned int max;
 .br
-.B } expbuf_t;
+} 
+.B expbuf_t
+;
 .sp
 
-.B expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size)
+expbuf_t * 
+.B expbuf_init
+(expbuf_t *buf, unsigned int size)
 .br
-.B void expbuf_clear(expbuf_t *buf)
+void 
+.B expbuf_clear
+(expbuf_t *buf)
 .br
-.B expbuf_t * expbuf_free(expbuf_t *buf)
+expbuf_t * 
+.B expbuf_free
+(expbuf_t *buf)
 .br
-.B void expbuf_add(expbuf_t *buf, void *data, unsigned int len)
+void 
+.B expbuf_add
+(expbuf_t *buf, void *data, unsigned int len)
 .br
-.B void expbuf_purge(expbuf_t *buf, unsigned int len)
+void 
+.B expbuf_purge
+(expbuf_t *buf, unsigned int len)
 .br
-.B void expbuf_shrink(expbuf_t *buf, unsigned int extra)
+void 
+.B expbuf_shrink
+(expbuf_t *buf, unsigned int extra)
 .br
-.B char * expbuf_string(expbuf_t *buf)
+char * 
+.B expbuf_string
+(expbuf_t *buf)
 .sp
 compile with the 
 .B -lexpbuf
 option
 .SH EXAMPLES
+.nf
+// compile with -lexpbuf
 #include <expbuf.h>
-.sp
+
 int main(void) {
-.br
 	expbuf_t *buffer;
-.br
 	char data[1024]];
-.br
 	int len, avail;
-.sp
 	buffer = expbuf_init(NULL, 0);
-.br
 	len = read_data(data, 1024);
-.br
 	while (len >= 0) {
-.br
 		expbuf_add(buffer, data, len);
-.br
 		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
-.br
 		expbuf_purge(buffer, processed);
-.br
 		len = read_data(data);
-.br
 	}
-.br
 	buffer = expbuf_free(buffer);
-.br
 	assert(buffer == NULL);
-.sp
 	return(0);
-.br
 }
+.fi
 .SH DESCRIPTION
 .B libexpbuf
 is a simple library for handling an expanding buffer.  This buffer is very primative, 
@@ -92,12 +96,10 @@ size that has so far been allocated.
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf/
 .fi

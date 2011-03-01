@@ -1,43 +1,34 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_set 3 "23 October 2008" "1.0" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_set 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_set \- Add data to the buffer, overwriting what is already there.
 .SH SYNOPSIS
-.B #include <expbuf.h>
-.sp
-.B void expbuf_set(expbuf_t *buf, void *data, unsigned int len);
-.br
-.SH EXAMPLES
 #include <expbuf.h>
 .sp
+void 
+.B expbuf_set
+(expbuf_t *buf, void *data, unsigned int len);
+.br
+.SH EXAMPLES
+.nf
+#include <expbuf.h>
+
 int main(void) {
-.br
 	expbuf_t buffer;
-.br
 	char data[1024]];
-.br
 	int len, avail;
-.sp
 	expbuf_init(&buffer, 0);
-.br
 	len = read_data(data, 1024);
-.br
 	while (len >= 0) {
-.br
 		expbuf_set(&buffer, data, len);
-.br
 		processed = process_data(buffer.data, buffer.length);
-.br
 		len = read_data(data);
-.br
 	}
-.br
 	expbuf_free(&buffer);
-.br
 	return(0);
-.br
 }
+.fi
 .SH DESCRIPTION
 .B expbuf_set()
 is used to add data to the buffer, expanding it if needed.  If there is already data in the buffer, the new data will be written over top of it.  If there is not enough memory allocated, it will resize the amount of memory as needed.  It will not reduce the amount of memory allocated.
@@ -51,14 +42,10 @@ is used to add data to the buffer, expanding it if needed.  If there is already 
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf/
 .fi
-.SH HISTORY
-Oct 23, 2008 \- Initial v1.0 release made public.

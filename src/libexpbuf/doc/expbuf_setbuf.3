@@ -1,12 +1,14 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_setbuf 3 "18 April 2010" "1.30" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_setbuf 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_setbuf \- Set the contents of one buffer into to the buffer, overwriting it.
 .SH SYNOPSIS
-.B #include <expbuf.h>
+#include <expbuf.h>
 .sp
-.B void expbuf_setbuf(expbuf_t *target, expbuf_t *src);
+void 
+.B expbuf_setbuf
+(expbuf_t *target, expbuf_t *src);
 .br
 .SH DESCRIPTION
 .B expbuf_setbuf()
@@ -23,12 +25,10 @@ is used to set data from one buffer to another buffer, overwriting the 'target' 
 .BR expbuf_shrink (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf
 .fi

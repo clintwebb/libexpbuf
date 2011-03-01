@@ -1,22 +1,24 @@
 .\" man page for libexpbuf
 .\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH expbuf_t 3 "23 October 2008" "1.0" "Library for Expanding Buffer."
+.TH expbuf_t 3 "1 March 2011" "1.04" "Library for Expanding Buffer."
 .SH NAME
 expbuf_t \- expanding buffer structure.
 .SH SYNOPSIS
-.B #include <expbuf.h>
+#include <expbuf.h>
 .sp
-.B typedef struct
+typedef struct
 .br
-.B {
+{
 .br
-.B 	char *data;
+ 	char *data;
 .br
-.B 	unsigned int length;
+	unsigned int length;
 .br
-.B 	unsigned int max;
+	unsigned int max;
 .br
-.B } expbuf_t;
+} 
+.B expbuf_t
+;
 .sp
 .SH DESCRIPTION
 .B expbuf_t
@@ -32,14 +34,10 @@ is a simple structure that is managed by the libexpbuf library.  It contains a d
 .BR expbuf_set (3),
 .BR expbuf_shrink (3),
 .BR expbuf_string (3)
-.SH BUGS
-No known bugs at this time. 
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
 on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.hyper-active.com.au/libexpbuf/
+http://www.github.com/hyper/libexpbuf/
 .fi
-.SH HISTORY
-Oct 23, 2008 \- Initial v1.0 release made public.
