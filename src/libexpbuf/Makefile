@@ -35,9 +35,7 @@ lib-test: lib-test.c $(REQH) $(INCDIR)/expbuf.h
 
 install_dev: expbuf.h 
 	cp expbuf.h $(INCDIR)/
-	pushd doc
-	@for i in *.3; do gzip -c $$i > $(MANPATH)/man3/$$i.gz; done
-	popd
+	@for i in man3/*.3; do gzip -c $$i > $(MANPATH)/$$i.gz; done
 
 install: $(LIBFILE)
 	cp $(LIBFILE) $(LIBDIR)/
