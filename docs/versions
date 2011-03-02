@@ -1,0 +1,4 @@
+libexpbuf
+ v1.03 - added expbuf_addbuf() and expbuf_setbuf() which adds the contents of one buf into another buf.
+ v1.04 - updated the manpages and seperated the install into object and developer installs.
+
