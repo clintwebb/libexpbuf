@@ -20,7 +20,7 @@
 #include <unistd.h>
 
 
-#if (EXPBUF_VERSION != 0x00010400)
+#if (EXPBUF_VERSION != 0x00010410)
 #error "Incorrect header version.  code and header versions must match."
 #endif
 

@@ -17,8 +17,8 @@
 #define __EXPBUF_H
 
 
-#define EXPBUF_VERSION 0x00010400
-#define EXPBUF_VERSION_TEXT "v1.04.00"
+#define EXPBUF_VERSION 0x00010410
+#define EXPBUF_VERSION_TEXT "v1.04.10"
 
 
 typedef struct

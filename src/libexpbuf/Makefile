@@ -4,10 +4,12 @@ MAINFILE=libexpbuf.so
 LIBVER=1.0.1
 LIBFILE=$(MAINFILE).$(LIBVER)
 SONAME=$(MAINFILE).1
-LIBDIR=/usr/lib
-INCDIR=/usr/include
+DESTDIR=
+LIBDIR=$(DESTDIR)/usr/lib
+INCDIR=$(DESTDIR)/usr/include
 
-MANPATH=/usr/share/man
+
+MANPATH=$(DESTDIR)/usr/share/man
 
 
 all: $(LIBFILE)
