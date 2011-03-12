@@ -43,7 +43,6 @@ install: $(LIBFILE)
 	cp $(LIBFILE) $(LIBDIR)/
 	@-test -e $(LIBDIR)/$(MAINFILE) && rm $(LIBDIR)/$(MAINFILE)
 	ln -s $(LIBDIR)/$(LIBFILE) $(LIBDIR)/$(MAINFILE)
-	nice ldconfig
 
 clean:
 	@-[ -e libexpbuf.o ] && rm libexpbuf.o
