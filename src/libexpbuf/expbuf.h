@@ -1,15 +1,24 @@
 /*
 
 	libexpbuf
-	(c) Copyright Hyper-Active Systems, Australia
+	This is a small and simple library used to control a very simple expanding buffer.
+
+	
+	Copyright (C) Hyper-Active Systems, Australia
+    Copyright (C) 2015  Clinton Webb
 
 	Contact:
 		Clinton Webb
 		webb.clint@gmail.com
 
-	This is a small and simple library used to control a very simple expanding buffer.
 
-	It is released under GPL v2 or later license.  Details are included in the LICENSE file.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser Public License for more details.
+
+    You should have received a copy of the GNU Lesser Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -28,6 +37,9 @@ typedef struct
 	unsigned int max;
 	char internally_created;
 } expbuf_t;
+
+
+// See the man-pages for more detail about each function.
 
 
 expbuf_t * expbuf_init(expbuf_t *buf, unsigned int size);
