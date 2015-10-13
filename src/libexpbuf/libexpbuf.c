@@ -1,15 +1,13 @@
 /*
 
-	libexpbuf
-	This is a small and simple library used to control a very simple expanding buffer.
+    libexpbuf
+    This is a small and simple library used to control a very simple expanding buffer.
 
-	
-	Copyright (C) Hyper-Active Systems, Australia
+    Copyright (C) Hyper-Active Systems, Australia
     Copyright (C) 2015  Clinton Webb
 
-	Contact:
-		Clinton Webb
-		webb.clint@gmail.com
+    Contact:
+        Clinton Webb <webb.clint@gmail.com>
 
 
     This program is distributed in the hope that it will be useful,
@@ -93,12 +91,18 @@ expbuf_t * expbuf_free(expbuf_t *buf)
 	assert(buf->internally_created == 0 || buf->internally_created == 1);
 
 	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	
 	if (BUF_DATA(buf)) {
+		assert(BUF_MAX(buf) > 0);
+		BUF_MAX(buf) = 0;
+		BUF_LENGTH(buf) = 0;
+
 		free(BUF_DATA(buf));
 		BUF_DATA(buf) = NULL;
-		BUF_LENGTH(buf) = 0;
-		BUF_MAX(buf) = 0;
+	}
+	else {
+		assert(BUF_LENGTH(buf) == 0);
+		assert(BUF_MAX(buf) == 0);
 	}
 	
 	// if the buffer was created internally, then we need to make it free itself.
@@ -126,10 +130,14 @@ void expbuf_add(expbuf_t *buf, const void *data, unsigned int len)
 
 	avail = BUF_MAX(buf) - BUF_LENGTH(buf);
 	if (avail < len) {
-		BUF_DATA(buf) = (char*) realloc(BUF_DATA(buf), (BUF_LENGTH(buf) + len));
-		assert(BUF_DATA(buf));
+		// there was not enough space in the buffer to add the new data.
+		
+		// determine the new maximum size of the buffer.
 		BUF_MAX(buf) = BUF_LENGTH(buf) + len;
 		assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
+		
+		BUF_DATA(buf) = (char*) realloc(BUF_DATA(buf), BUF_MAX(buf));
+		assert(BUF_DATA(buf));
 	}
 
 	memmove(BUF_DATA(buf) + BUF_LENGTH(buf), data, len);
@@ -141,7 +149,6 @@ void expbuf_add(expbuf_t *buf, const void *data, unsigned int len)
 // add data to the buffer overwriting what is already there, expanding it if necessary.
 void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 {
-	
 	assert(buf);
 	assert(data);
 	assert(len > 0);
@@ -151,6 +158,7 @@ void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 	BUF_LENGTH(buf) = 0;
 
 	if (BUF_MAX(buf) < len) {
+		// TODO: Do we really want to shrink the buffer if we set data to it?
 		BUF_DATA(buf) = (char*) realloc(BUF_DATA(buf), len);
 		assert(BUF_DATA(buf));
 		BUF_MAX(buf) = len;
@@ -222,6 +230,7 @@ char * expbuf_string(expbuf_t *buf) {
 }
 
 
+// apply some formatted text to the buffer.  This will over-write whatever is already in there.
 void expbuf_print(expbuf_t *buf, const char *format, ...)
 {
   va_list ap;
@@ -255,18 +264,17 @@ void expbuf_print(expbuf_t *buf, const char *format, ...)
 }
 
 
-// function that adds data from src to target.
+// function that adds data from src expbuf to target expbuf.
 void expbuf_addbuf(expbuf_t *target, expbuf_t *src)
 {
 	assert(target && src);
 	expbuf_add(target, BUF_DATA(src), BUF_LENGTH(src));
 }
 
-// function that sets data from src to target, overwriting what was originally in target.
+// function that sets data from src expbuf to target expbuf, overwriting what was originally in target.
 void expbuf_setbuf(expbuf_t *target, expbuf_t *src)
 {
 	assert(target && src);
 	expbuf_set(target, BUF_DATA(src), BUF_LENGTH(src));
 }
-
 
