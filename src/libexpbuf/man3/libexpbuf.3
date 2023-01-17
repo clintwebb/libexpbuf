@@ -1,6 +1,6 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
-.TH libexpbuf 3 "1 March 2011" "1.04" "Library for Expanding Buffer."
+.\" Contact dev@rhokz.com to correct errors or omissions.
+.TH libexpbuf 3 "1 March 2011" "1.04.10" "Library for Expanding Buffer."
 .SH NAME
 libexpbuf \- library for an expanding buffer
 .SH SYNOPSIS
@@ -46,13 +46,23 @@ void
 .B expbuf_shrink
 (expbuf_t *buf, unsigned int extra)
 .br
-char * 
+void
+.B expbuf_inc
+(expbuf_t *buf, unsigned int len)
+.br
+char *
 .B expbuf_string
 (expbuf_t *buf)
 .sp
 compile with the 
 .B -lexpbuf
 option
+.SH DESCRIPTION
+.B libexpbuf
+is a simple library for handling an expanding buffer.  This buffer is very primative,
+and is merely a single data string (keeping track of the actual length), and a maximum
+size that has so far been allocated.
+.sp
 .SH EXAMPLES
 .nf
 // compile with -lexpbuf
@@ -60,27 +70,21 @@ option
 
 int main(void) {
 	expbuf_t *buffer;
-	char data[1024]];
-	int len, avail;
-	buffer = expbuf_init(NULL, 0);
-	len = read_data(data, 1024);
+	int len;
+
+	buffer = expbuf_init(NULL, 1024);
+	len = read_data(BUF_OFFSET(buffer), BUF_AVAIL(buffer));
 	while (len >= 0) {
-		expbuf_add(buffer, data, len);
+		expbuf_inc(buffer, len);
 		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
 		expbuf_purge(buffer, processed);
-		len = read_data(data);
+		len = read_data(BUF_OFFSET(buffer), BUF_AVAIL(buffer));
 	}
 	buffer = expbuf_free(buffer);
 	assert(buffer == NULL);
 	return(0);
 }
 .fi
-.SH DESCRIPTION
-.B libexpbuf
-is a simple library for handling an expanding buffer.  This buffer is very primative, 
-and is merely a single data string (keeping track of the actual length), and a maximum 
-size that has so far been allocated.
-.sp
 .SH FILES
 .P 
 .I /usr/lib/libexpbuf.so
@@ -94,12 +98,12 @@ size that has so far been allocated.
 .BR expbuf_purge (3),
 .BR expbuf_set (3),
 .BR expbuf_shrink (3),
+.BR expbuf_inc (3),
 .BR expbuf_string (3),
 .BR expbuf_t (3)
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf/
+https://www.github.com/clintwebb/libexpbuf/
 .fi

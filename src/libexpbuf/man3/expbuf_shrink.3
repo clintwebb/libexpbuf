@@ -1,5 +1,5 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.\" Contact dev@rhokz.com to correct errors or omissions. 
 .TH expbuf_shrink 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_shrink \- Shrink the buffer to reclaim memory that has been allocated, but is not in use.
@@ -15,26 +15,28 @@ void
 #include <expbuf.h>
 
 int main(void) {
-	expbuf_t buffer;
+	expbuf_t *buffer=NULL;
 	char data[1024]];
-	int len, avail;
+	int len, avail, processed;
 
-	expbuf_init(&buffer, 0);
+	expbuf_init(buffer, 0);
 	len = read_data(data, 1024);
 	while (len >= 0) {
-		expbuf_add(&buffer, data, len);
-		processed = process_data(buffer.data, buffer.length);
-		expbuf_purge(&buffer, processed);
-		expbuf_shrink(&buffer, 1024);
-		len = read_data(data);
+		expbuf_add(buffer, data, len);
+		processed = process_data(buffer->data, buffer->length);
+		expbuf_purge(buffer, processed);
+		expbuf_shrink(buffer, 1024);
+		len = read_data(data, 1024);
 	}
-	expbuf_free(&buffer);
+	buffer = expbuf_free(buffer);
 	return(0);
 }
 .fi
 .SH DESCRIPTION
 .B expbuf_shrink()
-is used to shrink the buffer to reclaim memory that has been allocated, but is not in use.   The 'extra' parameter also allows it to ensure a specified amount of unused space is left at the end of the buffer.  This means that if there is not enough space in the buffer for the 'extra' amount, then it will increase the amount allocated.
+is used to shrink the buffer to reclaim memory that has been allocated but is not in use.   The 'extra' parameter also 
+allows it to ensure a specified amount of unused space is left at the end of the buffer.  This means that if there is not 
+enough space in the buffer for the 'extra' amount, then it will increase the amount allocated.
 .sp
 If the 'extra' parameter is zero, and there is no data in the buffer, then all memory will be de-allocated.
 .SH SEE ALSO
@@ -50,7 +52,6 @@ If the 'extra' parameter is zero, and there is no data in the buffer, then all m
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf
+https://www.github.com/clintwebb/libexpbuf
 .fi

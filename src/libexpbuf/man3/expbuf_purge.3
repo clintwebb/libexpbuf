@@ -1,5 +1,5 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.\" Contact dev@rhokz.com to correct errors or omissions. 
 .TH expbuf_purge 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_purge \- Remove data from the begining of the buffer, moving any leftover data to the begining.
@@ -17,14 +17,14 @@ void
 int main(void) {
 	expbuf_t buffer;
 	char data[1024]];
-	int len, avail;
+	int len, avail, processed;
 	expbuf_init(&buffer, 0);
 	len = read_data(data, 1024);
 	while (len >= 0) {
 		expbuf_add(&buffer, data, len);
 		processed = process_data(buffer.data, buffer.length);
 		expbuf_purge(&buffer, processed);
-		len = read_data(data);
+		len = read_data(data, 1024);
 	}
 	expbuf_free(&buffer);
 	return(0);
@@ -32,9 +32,12 @@ int main(void) {
 .fi
 .SH DESCRIPTION
 .B expbuf_purge()
-is used to remove data from the buffer that has been processed.  In otherwords, if you have receive 1200 bytes from a socket, and you run it through a processing routinge, which indicates that it has processed 845 bytes of that data, then we need to purge those 845 byte.  The remaining bytes will be moved down to the beginning of the buffer.
+is used to remove data from the buffer that has been processed.  In otherwords, if you have received 1200 bytes from a 
+socket, and you run it through a processing routine, which indicates that it has processed 845 bytes of that data, then 
+we need to purge those 845 byte.  The remaining bytes will be moved down to the beginning of the buffer.
 .sp
-If all the data in the buffer is being purged, it merely indicated that there is zero data in there.  It does not shrink or de-allocate memory.
+If all the data in the buffer is being purged, it merely indicates that there is zero data in there.  It does not shrink 
+or de-allocate memory.
 .SH SEE ALSO
 .BR libexpbuf (3),
 .BR expbuf_add (3),
@@ -48,7 +51,6 @@ If all the data in the buffer is being purged, it merely indicated that there is
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf/
+https://www.github.com/clintwebb/libexpbuf/
 .fi

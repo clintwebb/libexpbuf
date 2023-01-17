@@ -1,13 +1,13 @@
 .\" man page for libexpbuf
 .\" Contact dev@rhokz.com to correct errors or omissions.
-.TH expbuf_add 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
+.TH expbuf_inc 3 "6 December 2022" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
-expbuf_add \- Add data to the buffer.
+expbuf_inc \- Increase the size of the content in the buffer.  This is used primarily only when data has been directly added to the buffer.
 .SH SYNOPSIS
 .B #include <expbuf.h>
 .sp
-void 
-.B expbuf_add
+unsigned int
+.B expbuf_inc
 (expbuf_t *buf, void *data, unsigned int len);
 .br
 .SH EXAMPLES
@@ -16,25 +16,23 @@ void
 
 int main(void) {
 	expbuf_t buffer;
-	char data[1024]];
 	int len, avail;
-	expbuf_init(&buffer, 0);
-	len = read_data(data, 1024);
+	expbuf_init(&buffer, 1024);
+	len = read_data(BUF_OFFSET(&buffer), BUF_AVAIL(&buffer));
 	while (len >= 0) {
-		expbuf_add(&buffer, data, len);
+		expbuf_inc(&buffer, len);
 		processed = process_data(buffer.data, buffer.length);
 		expbuf_purge(&buffer, processed);
-		len = read_data(data);
+		len = read_data(BUF_OFFSET(&buffer), BUF_AVAIL(&buffer));
 	}
 	expbuf_free(&buffer);
 	return(0);
 }
 .fi
 .SH DESCRIPTION
-.B expbuf_add()
-is used to add data to the buffer, expanding it if needed.  If there is already data in the buffer, the new data will be added to the 
-end of it.  If there is not enough memory allocated, it will resize the amount of memory as needed.
-
+.B expbuf_inc()
+is used to indicate that data was added to the buffer contents.  This is normally used for fixed length buffers, but can certainly
+be used in many other situations.
 .SH SEE ALSO
 .BR libexpbuf (3),
 .BR expbuf_addbuf (3),

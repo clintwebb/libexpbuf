@@ -1,8 +1,8 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.\" Contact dev@rhokz.com to correct errors or omissions. 
 .TH expbuf_string 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
-expbuf_string \- Make sure that the data in the buffer is null terminated.  Usefull for printing strings.
+expbuf_string \- Output the data in the buffer as a null-terminated string.  Usefull for printing strings.
 .SH SYNOPSIS
 #include <expbuf.h>
 .sp
@@ -15,19 +15,19 @@ char *
 #include <expbuf.h>
 
 int main(void) {
-	expbuf_t buffer;
+	expbuf_t *buffer;
 	char data[1024]];
 	int len, avail;
 
-	expbuf_init(&buffer, 0);
+	buffer = expbuf_init(NULL, 0);
 	len = read_data(data, 1024);
 	while (len >= 0) {
-		expbuf_add(&buffer, data, len);
-		printf("String received: %s\n", expbuf_string(&buffer));
-		expbuf_purge(&buffer, processed);
-		len = read_data(data);
+		expbuf_add(buffer, data, len);
+		printf("String received: %s\n", expbuf_string(buffer));
+		expbuf_purge(buffer, len);
+		len = read_data(data, 1024);
 	}
-	expbuf_free(&buffer);
+	buffer = expbuf_free(buffer);
 	return(0);
 }
 .fi
@@ -49,7 +49,6 @@ can be included in a printf statement for example.
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf/
+https://www.github.com/clintwebb/libexpbuf/
 .fi

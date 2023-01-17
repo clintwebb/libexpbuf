@@ -1,5 +1,5 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.\" Contact dev@rhokz.com to correct errors or omissions. 
 .TH expbuf_init 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
 expbuf_init \- Initialise the values in the buffer structure.
@@ -17,14 +17,14 @@ expbuf_t *
 int main(void) {
 	expbuf_t *buffer;
 	char data[1024]];
-	int len, avail;
+	int len, avail, processed;
 	buffer = expbuf_init(NULL, 0);
 	len = read_data(data, 1024);
 	while (len >= 0) {
 		expbuf_add(buffer, data, len);
 		processed = process_data(BUF_DATA(buffer), BUF_LENGTH(buffer));
 		expbuf_purge(buffer, processed);
-		len = read_data(data);
+		len = read_data(data, 1024);
 	}
 	expbuf_free(buffer);
 	buffer = NULL;
@@ -35,8 +35,11 @@ int main(void) {
 .SH DESCRIPTION
 .B expbuf_init()
 is used to initialise an expbuf_t structure.  If a pointer to an existing peice of memory is provided, it assumes that 
-the contents of the existing structure are not valid, and merely sets all fields to default values.  If the buf parameter is NULL,
-then it will internally allocate memory for the expbuf_t structure and return it.  It will keep track of the fact that it was created internally, and will be deallocated when exbpbuf_free() is called on it.   You should not free the memory for the object if the libexpbuf library created it.
+the contents of the existing structure are not valid, and merely sets all fields to default values.  If the buf parameter 
+is NULL, then it will internally allocate memory for the expbuf_t structure and return it.  It will keep track of the fact 
+that it was created internally, and will be deallocated when 
+.BR exbpbuf_free() 
+is called on it.   You should not free the memory for the object if the libexpbuf library created it.
 .sp The
 .I size
 field is used to pre-allocate some memory to the buffer.  
@@ -53,7 +56,6 @@ field is used to pre-allocate some memory to the buffer.
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf/
+http://www.github.com/clintwebb/libexpbuf/
 .fi

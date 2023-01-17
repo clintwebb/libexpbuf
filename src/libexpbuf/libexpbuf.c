@@ -3,8 +3,7 @@
     libexpbuf
     This is a small and simple library used to control a very simple expanding buffer.
 
-    Copyright (C) Hyper-Active Systems, Australia
-    Copyright (C) 2015  Clinton Webb
+    Copyright (C) 2022  Clinton Webb
 
     Contact:
         Clinton Webb <webb.clint@gmail.com>
@@ -31,7 +30,7 @@
 #include <unistd.h>
 
 
-#if (EXPBUF_VERSION != 0x00010410)
+#if (EXPBUF_VERSION != 0x00010430)
 #error "Incorrect header version.  code and header versions must match."
 #endif
 
@@ -43,27 +42,32 @@ expbuf_t * expbuf_init(expbuf_t *b, unsigned int size)
 {
 	expbuf_t *buf;
 	
-	// if a NULL is passed in, that means that we need to create the object ourselves (the safest path)
 	if (b) {
 		buf = b;
 		buf->internally_created = 0;
 	}
 	else {
+		// if a NULL is passed in, that means that we need to create the object ourselves (the safest path)
 		buf = calloc(1, sizeof(*buf));
-		buf->internally_created = 1;
+		assert(buf);
+		if (buf) {
+			buf->internally_created = 1;
+		}
 	}
 	
-	BUF_LENGTH(buf) = 0;
-	if (size > 0) {
-		BUF_DATA(buf) = (char *) malloc(size);
-		if (BUF_DATA(buf) == NULL) { BUF_MAX(buf) = 0; }
-		else { BUF_MAX(buf) = size; }
+	if (buf) {
+		buf->length = 0;
+		if (size > 0) {
+			buf->data = (char *) malloc(size);
+			if (buf->data == NULL) { buf->max = 0; }
+			else { buf->max = size; }
+		}
+		else {
+			buf->data = NULL;
+			buf->max = 0;
+		}
 	}
-	else {
-		BUF_DATA(buf) = NULL;
-		BUF_MAX(buf) = 0;
-	}
-	
+
 	return(buf);
 }
 
@@ -71,10 +75,10 @@ expbuf_t * expbuf_init(expbuf_t *b, unsigned int size)
 void expbuf_clear(expbuf_t *buf)
 {
 	assert(buf);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 	
-	BUF_LENGTH(buf) = 0;
+	buf->length = 0;
 }
 
 // this will clear out any data in the buffer, and free the resources
@@ -89,20 +93,19 @@ expbuf_t * expbuf_free(expbuf_t *buf)
 	assert(buf);
 
 	assert(buf->internally_created == 0 || buf->internally_created == 1);
-
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
+	assert(buf->length <= buf->max);
 	
-	if (BUF_DATA(buf)) {
-		assert(BUF_MAX(buf) > 0);
-		BUF_MAX(buf) = 0;
-		BUF_LENGTH(buf) = 0;
+	if (buf->data) {
+		assert(buf->max > 0);
+		buf->max = 0;
+		buf->length = 0;
 
-		free(BUF_DATA(buf));
-		BUF_DATA(buf) = NULL;
+		free(buf->data);
+		buf->data = NULL;
 	}
 	else {
-		assert(BUF_LENGTH(buf) == 0);
-		assert(BUF_MAX(buf) == 0);
+		assert(buf->length == 0);
+		assert(buf->max == 0);
 	}
 	
 	// if the buffer was created internally, then we need to make it free itself.
@@ -125,24 +128,24 @@ void expbuf_add(expbuf_t *buf, const void *data, unsigned int len)
 	assert(buf);
 	assert(data);
 	assert(len > 0);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
-	avail = BUF_MAX(buf) - BUF_LENGTH(buf);
+	avail = buf->max - buf->length;
 	if (avail < len) {
 		// there was not enough space in the buffer to add the new data.
 		
 		// determine the new maximum size of the buffer.
-		BUF_MAX(buf) = BUF_LENGTH(buf) + len;
-		assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
+		buf->max = buf->length + len;
+		assert(buf->length <= buf->max);
 		
-		BUF_DATA(buf) = (char*) realloc(BUF_DATA(buf), BUF_MAX(buf));
-		assert(BUF_DATA(buf));
+		buf->data = (char*) realloc(buf->data, buf->max);
+		assert(buf->data);
 	}
 
-	memmove(BUF_DATA(buf) + BUF_LENGTH(buf), data, len);
-	BUF_LENGTH(buf) += len;
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
+	memmove(buf->data + buf->length, data, len);
+	buf->length += len;
+	assert(buf->length <= buf->max);
 }
 
 
@@ -152,21 +155,21 @@ void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 	assert(buf);
 	assert(data);
 	assert(len > 0);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
-	BUF_LENGTH(buf) = 0;
+	buf->length = 0;
 
-	if (BUF_MAX(buf) < len) {
-		// TODO: Do we really want to shrink the buffer if we set data to it?
-		BUF_DATA(buf) = (char*) realloc(BUF_DATA(buf), len);
-		assert(BUF_DATA(buf));
-		BUF_MAX(buf) = len;
+	if (buf->max < len) {
+		// TODO: Do we want to shrink the buffer if we set data to it?
+		buf->data = (char*) realloc(buf->data, len);
+		assert(buf->data);
+		buf->max = len;
 	}
 
-	memmove(BUF_DATA(buf), data, len);
-	BUF_LENGTH(buf) = len;
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
+	memmove(buf->data, data, len);
+	buf->length = len;
+	assert(buf->length <= buf->max);
 }
 
 
@@ -175,20 +178,40 @@ void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 void expbuf_purge(expbuf_t *buf, unsigned int len) {
 	assert(buf);
 	assert(len > 0);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
-	assert(len <= BUF_LENGTH(buf));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
+	assert(len <= buf->length);
 
-	if (len < BUF_LENGTH(buf)) {
-		BUF_LENGTH(buf) -= len;
-		assert(BUF_LENGTH(buf) > 0);
-		memmove(BUF_DATA(buf), BUF_DATA(buf)+len, BUF_LENGTH(buf));
+	if (len < buf->length) {
+		buf->length -= len;
+		assert(buf->length > 0);
+		memmove(buf->data, buf->data+len, buf->length);
 	}
 	else {
-		assert(BUF_LENGTH(buf) == len);
-		BUF_LENGTH(buf) = 0;
+		assert(buf->length == len);
+		buf->length = 0;
 	}
 }
+
+// If data is directly added to the buffer, then this will simply increase the marked length of the contents in the buffer.
+// It will do some validation of the input (for example, if the available space is only 24 bytes, but it is indicating it is
+// increasing by 32, then there is an error.
+// Return the new length, no matter how it was processed.
+unsigned int expbuf_inc(expbuf_t *buf, unsigned int len)
+{
+	assert(buf);
+	assert(len > 0);
+	assert(len <= BUF_AVAIL(buf));
+
+	if (len <= BUF_AVAIL(buf)) {
+		buf->length += len;
+		assert(buf->length <= buf->max);
+	}
+
+	return(buf->length);
+}
+
+
 
 // The buffer expands as more data is added to it.  This function will shrink
 // down, leaving 'extra' padding at the end. 
@@ -196,41 +219,43 @@ void expbuf_purge(expbuf_t *buf, unsigned int len) {
 void expbuf_shrink(expbuf_t *buf, unsigned int extra)
 {
 	assert(buf);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
-	if (extra == 0 && BUF_LENGTH(buf) == 0 && BUF_DATA(buf) != NULL) {
-		free(BUF_DATA(buf));
-		BUF_DATA(buf) = NULL;
-		BUF_MAX(buf) = 0;
+	if (extra == 0 && buf->length == 0 && buf->data != NULL) {
+		free(buf->data);
+		buf->data = NULL;
+		buf->max = 0;
 	}
-	else if ((BUF_MAX(buf) - BUF_LENGTH(buf)) != extra) {
-		BUF_DATA(buf) = (char *) realloc(BUF_DATA(buf), BUF_LENGTH(buf)+extra);
-		BUF_MAX(buf) = BUF_LENGTH(buf) + extra;
+	else if ((buf->max - buf->length) != extra) {
+		buf->data = (char *) realloc(buf->data, buf->length+extra);
+		buf->max = buf->length + extra;
 	}
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 }
 
 
 // make sure that the data is null terminated, with enough space, and then return a pointer to the data.  
 char * expbuf_string(expbuf_t *buf) {
 	assert(buf != NULL);
-	assert(BUF_LENGTH(buf) <= BUF_MAX(buf));
-	assert((BUF_DATA(buf) == NULL && BUF_LENGTH(buf) == 0 && BUF_MAX(buf) == 0) || (BUF_DATA(buf) != NULL && BUF_MAX(buf) > 0));
+	assert(buf->length <= buf->max);
+	assert((buf->data == NULL && buf->length == 0 && buf->max == 0) || (buf->data != NULL && buf->max > 0));
 
 	// if there is no space allocated, or not enough space allocated, then we
 	// add one char (or create a new one)
-	if (BUF_MAX(buf) == BUF_LENGTH(buf) || BUF_DATA(buf) == NULL) {
-		BUF_DATA(buf) = (char *) realloc(BUF_DATA(buf), BUF_LENGTH(buf) + 1);
-		BUF_MAX(buf)++;
+	if (buf->max == buf->length || buf->data == NULL) {
+		buf->data = (char *) realloc(buf->data, buf->length + 1);
+		buf->max++;
+
+
 	}
-	BUF_DATA(buf)[BUF_LENGTH(buf)] = '\0';
-	return(BUF_DATA(buf));
+	buf->data[buf->length] = '\0';
+	return(buf->data);
 }
 
 
-// apply some formatted text to the buffer.  This will over-write whatever is already in there.
+// apply some formatted text to the buffer.  This will append to the existing buffer contents.
 void expbuf_print(expbuf_t *buf, const char *format, ...)
 {
   va_list ap;
@@ -240,13 +265,14 @@ void expbuf_print(expbuf_t *buf, const char *format, ...)
 	assert(buf);
 	assert(format);
 
+	avail = buf->max-buf->length;
+
 	// process the string. Apply directly to the buildbuf.  If buildbuf is not
 	// big enough, increase the size and do it again.
 	redo = 1;
 	while (redo) {
-		avail = BUF_MAX(buf)-BUF_LENGTH(buf);
 		va_start(ap, format);
-		n = vsnprintf(BUF_DATA(buf)+BUF_LENGTH(buf), avail, format, ap);
+		n = vsnprintf(buf->data+buf->length, avail, format, ap);
 		va_end(ap);
 
 		assert(n > 0);
@@ -256,8 +282,8 @@ void expbuf_print(expbuf_t *buf, const char *format, ...)
 			assert(redo);
 		}
 		else {
-			assert(n <= BUF_MAX(buf));
-			BUF_LENGTH(buf) += n;
+			assert(n <= buf->max);
+			buf->length += n;
 			redo = 0;
 		}
 	}
@@ -268,13 +294,13 @@ void expbuf_print(expbuf_t *buf, const char *format, ...)
 void expbuf_addbuf(expbuf_t *target, expbuf_t *src)
 {
 	assert(target && src);
-	expbuf_add(target, BUF_DATA(src), BUF_LENGTH(src));
+	expbuf_add(target, src->data, src->length);
 }
 
 // function that sets data from src expbuf to target expbuf, overwriting what was originally in target.
 void expbuf_setbuf(expbuf_t *target, expbuf_t *src)
 {
 	assert(target && src);
-	expbuf_set(target, BUF_DATA(src), BUF_LENGTH(src));
+	expbuf_set(target, src->data, src->length);
 }
 

@@ -1,8 +1,8 @@
 .\" man page for libexpbuf
-.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.\" Contact dev@rhokz.com to correct errors or omissions. 
 .TH expbuf_free 3 "1 March 2011" "1.04" "libexpbuf - Library for a simple Expanding Buffer."
 .SH NAME
-expbuf_free \- clear the buffer and de-allocate memory that was allocated for it.
+expbuf_free \- clear the buffer and de-allocate memory that was allocated for it (and potentially the structure).
 .SH SYNOPSIS
 #include <expbuf.h>
 .sp
@@ -52,7 +52,6 @@ the buf pointer.
 .SH AUTHOR
 .nf
 Clint Webb (webb.clint@gmail.com)
-on behalf of Hyper-Active Systems, Australia.
 .br
-http://www.github.com/hyper/libexpbuf/
+http://www.github.com/clintwebb/libexpbuf/
 .fi
