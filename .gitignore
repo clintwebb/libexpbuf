@@ -2,4 +2,4 @@
 *.so.*
 *.pc
 *.tar.gz
-
+lib-test

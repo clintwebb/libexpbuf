@@ -1,4 +1,4 @@
-// simple tool to test that the 
+// simple tool to test that the library is working as expected.
 
 
 #include <assert.h>
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
 	// assign more data.
 	printf("Adding data to BB buffer\n");
-	expbuf_add(aa, "bye", 3);
+	expbuf_add(bb, "bye", 3);
 	
 	// return a buffer to the pool.
 	printf("Clearing AA buffer and returning to pool\n");
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
 	expbuf_add(aa, "bye", 3);
 	
 	// return a buffer to the pool.
-	printf("Clearing AA buffer and returning to pool\n");
-	expbuf_clear(aa);
+	printf("Not-Clearing AA buffer and returning to pool (expect an assert)\n");
+//	expbuf_clear(aa);
 	expbuf_pool_return(&bufpool, aa);
 	aa = NULL;
 
