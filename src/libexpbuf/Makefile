@@ -1,4 +1,9 @@
 ## make file for libexpbuf
+#
+# NOTE:
+#   install and install_dev should be used with sudo privileges.
+#   install:     deploys the minimum required for applications that use the library.
+#   install_dev: deploys everything else required to build applications that use the library.
 
 PRODUCT := expbuf
 LIBVER  := 1.0.1
@@ -20,7 +25,8 @@ REQH :=
 
 .PHONY: all install install_dev clean $(LIBNAME).pc
 
-# Need to be able to make 'man-pages' as well.  Not sure where to get the source for those... 
+
+
 
 libexpbuf.o: libexpbuf.c expbuf.h $(REQH)
 	gcc -c -fPIC libexpbuf.c -o $@ $(ARGS)
@@ -47,7 +53,7 @@ Description: Library for handling expandable buffers.
 URL: https://github.com/clintwebb/libexpbuf
 Version: $(LIBVER)
 Cflags: -I$${includedir}
-Libs: -L$${libdir} -l$(LIBNAME)
+Libs: -L$${libdir} -l$(PRODUCT)
 endef
 # Requires: librisp
 # Cflags: -I$${includedir} -pthread
@@ -59,7 +65,7 @@ $(LIBNAME).pc: Makefile
 	$(file > $@,$(PKG_CONFIG))
 
 
-install_dev: install expbuf.h $(LIBNAME).pc
+install_dev: install expbuf.h $(LIBNAME).pc man3/*.3
 	cp expbuf.h $(INCDIR)/
 	cp -v $(LIBNAME).pc /usr/lib/pkgconfig/
 	@for i in man3/*.3; do gzip -c $$i > $(MANPATH)/$$i.gz; done
