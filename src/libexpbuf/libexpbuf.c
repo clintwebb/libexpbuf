@@ -175,8 +175,10 @@ void expbuf_set(expbuf_t *buf, const void *data, unsigned int len)
 
 // purge some data from the begining of the buffer (presumably because it has
 // been processed).  Moving the remaining data to the beginning of the buffer.
-// TODO: Add some smarts to this, so that it will not move large chunks of data, and use an algorithm to determine whether to just move an offset, or move the actual data (will depend on multiple factors)
-void expbuf_purge(expbuf_t *buf, unsigned int len) 
+// TODO: Add some smarts to this, so that it will not move large chunks of data, and use an algorithm to determine whether to just
+//       move an offset, or move the actual data (will depend on multiple factors)
+void expbuf_purge(expbuf_t *buf, unsigned int len)
+{
 	assert(buf);
 	assert(len > 0);
 	assert(buf->length <= buf->max);

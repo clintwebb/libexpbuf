@@ -1,13 +1,26 @@
 /*
- 
-
 Implements a pool of expanding buffers.   It is a very simple pooling system.  When a process needs a buffer, one is provided.  When the process has finished 
 with it, the buffer is returned, but the memory that was allocated to it is not free'd.  
 
 The idea is that it will reduce the amount of time that is used in continuously allocating and de-allocating chunks of memory, and a stable number of buffers 
 with the maximum amount of memory needed will be allocated and re-used.
 
+
+    Copyright (C) 2022  Clinton Webb
+
+    Contact:
+        Clinton Webb <webb.clint@gmail.com>
+
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser Public License for more details.
+
+    You should have received a copy of the GNU Lesser Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 
 
 #include "expbufpool.h"
@@ -16,9 +29,8 @@ with the maximum amount of memory needed will be allocated and re-used.
 #include <stdlib.h>
 
 
-//-----------------------------------------------------------------------------
-// Initialise the buffer list.  It can be assumed that the list contains
-// garbage.
+//----------------------------------------------------------------------------------------------------------------------------------
+// Initialise the buffer list.  It can be assumed that the list contains garbage.
 void expbuf_pool_init(expbuf_pool_t *list, int max)
 {
 	assert(list != NULL);
@@ -34,7 +46,7 @@ void expbuf_pool_init(expbuf_pool_t *list, int max)
 }
 
 
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------
 // Free the resources that are referenced by the list.
 void expbuf_pool_free(expbuf_pool_t *list)
 {
@@ -75,7 +87,7 @@ void expbuf_pool_free(expbuf_pool_t *list)
 
 
 
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------
 // Looks at our list of buffers to find a free one so that
 expbuf_t * expbuf_pool_new(expbuf_pool_t *list, int amount)
 {
@@ -159,17 +171,14 @@ expbuf_t * expbuf_pool_new(expbuf_pool_t *list, int amount)
 }
 
 
-//-----------------------------------------------------------------------------
-// Returns a previously provided buffer to the pool.  The buffer must have been
-// allocated through the pool.   If the buffer being returned is larger than
-// the pre-specified max for the pool, then it will be shrunk.  If max is zero,
-// and the buffer is unusually large, then you should shrink it yourself before
-// returning it.
+//----------------------------------------------------------------------------------------------------------------------------------
+// Returns a previously provided buffer to the pool.  The buffer must have been allocated through the pool.   If the buffer being
+// returned is larger than the pre-specified max for the pool, then it will be shrunk.  If max is zero, and the buffer is unusually
+// large, then you should shrink it yourself before returning it.
 //
-//	** Should we free the buffer if it is larger than the max, or merely shrink
-//	   it?  I fear that we would likely end up fragmenting memory much quicker
-//	   if we only shrink it.
-// 
+//	** Should we free the buffer if it is larger than the max, or merely shrink it?  I fear that we would likely end up fragmenting
+//     memory much quicker if we only shrink it.
+//
 void expbuf_pool_return(expbuf_pool_t *list, expbuf_t *buffer)
 {
 	int i;
@@ -222,9 +231,6 @@ void expbuf_pool_return(expbuf_pool_t *list, expbuf_t *buffer)
 		}
 	}
 }
-
-
-
 
 
 
