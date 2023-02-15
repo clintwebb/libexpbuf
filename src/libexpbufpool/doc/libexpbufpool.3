@@ -1,0 +1,55 @@
+.\" man page for libexpbufpool
+.\" Contact dev@hyper-active.com.au to correct errors or omissions. 
+.TH libexpbuf 3 "27 January 2009" "1.0" "Library for a pool of Expanding Buffers."
+.SH NAME
+libexpbufpool \- library for a pool of expanding buffers
+.SH SYNOPSIS
+.\" Syntax goes here. 
+.B #include <expbufpool.h>
+.sp
+.B void expbuf_pool_init(expbuf_pool_t *pool)
+.br
+.B void expbuf_pool_free(expbuf_pool_t *pool)
+.br
+.sp
+compile with the 
+.B -lexpbufpool
+option
+.SH EXAMPLES
+#include <expbufpool.h>
+.sp
+EXAMPLE NEEDED
+.SH DESCRIPTION
+.B libexpbufpool
+is a simple library for handling a pool of expbuf_t expanding buffers.  When dealing with a lot of data, expanding 
+buffers are very useful, however, you dont want to have to allocate a new buffer for each operation, because that is 
+expensive.  So instead you have a pool of buffers that are not in use.  When you want to use a buffer, you get one from 
+the pool.  When you are finished with it, return it to the pool.
+.br
+
+.SH FILES
+.P 
+.I /usr/lib/libexpbufpool.so
+.br
+.I /usr/include/expbufpool.h
+.SH SEE ALSO
+.BR expbuf_add (3),
+.BR expbuf_clear (3),
+.BR expbuf_free (3),
+.BR expbuf_init (3),
+.BR expbuf_purge (3),
+.BR expbuf_set (3),
+.BR expbuf_shrink (3),
+.BR expbuf_string (3),
+.BR expbuf_t (3)
+.SH BUGS
+No known bugs at this time. 
+.SH AUTHOR
+.nf
+Clint Webb (webb.clint@gmail.com)
+on behalf of Hyper-Active Systems, Australia.
+.br
+http://www.hyper-active.com.au/libexpbufpool/
+.fi
+.SH HISTORY
+Jan 27, 2009 \- Initial v1.0 release made public.
